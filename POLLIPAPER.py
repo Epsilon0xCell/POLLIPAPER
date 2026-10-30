@@ -19,6 +19,10 @@ from comtypes import GUID
 import sys
 import pythoncom
 import winreg
+# I added this import in the Wave 2 fix pass, for the prompt encoding
+# in fetch_and_set_background below. The same edit removed the piexif
+# import that used to sit here: nothing in this file called piexif, so
+# a machine without it installed failed at import for no reason.
 from urllib.parse import quote
 
 # Define HRESULT
@@ -76,12 +80,28 @@ class WeatherFetcher:
 
         try:
             # Step 1: Get coordinates using Geocoding API
+            # I use https for this call because the API key travels in
+            # the URL as the appid parameter. The http version of this
+            # line, which is what this file had before Wave 2, sent
+            # that key in clear text on every weather fetch.
             geocode_url = f"https://api.openweathermap.org/geo/1.0/direct?q={city},{country}&limit=1&appid={self.api_key}"
+            # The 15 second timeout is per call, so a dead network can
+            # still hold this method for about 30 seconds across both
+            # calls before it gives up. Before Wave 2 neither call had
+            # a timeout at all, and a hung request hung the fetch.
             geocode_response = requests.get(geocode_url, timeout=15)
+            # raise_for_status turns a 401 or 404 into an exception
+            # the handler below catches. Without it, an error body
+            # would flow into the lat and lon reads and fail there
+            # instead, with a message that says nothing about the API.
             geocode_response.raise_for_status()
             geocode_data = geocode_response.json()
 
             if not geocode_data:
+                # An unknown place is a normal outcome, not an error,
+                # so I print and return None here like the missing key
+                # case above. This used to raise ValueError, which no
+                # caller was written to expect from a bad city name.
                 print(f"Could not find coordinates for {city}, {country}")
                 return None
 
@@ -98,6 +118,14 @@ class WeatherFetcher:
         except (RequestException, ValueError, KeyError, IndexError, TypeError) as e:
             # Callers treat None as "weather unavailable"; a network or
             # API failure must not crash the GUI callback that asked.
+            # The exception list is wider than network errors on
+            # purpose: ValueError covers a response body that is not
+            # valid JSON, and KeyError, IndexError, and TypeError
+            # cover a payload whose shape is not the list of places
+            # with lat and lon entries that the reads above assume.
+            # One hole I know about and leave: the weather_data.json
+            # write after this block sits outside the try, so a disk
+            # error there can still raise out of this method.
             print(f"Failed to fetch weather data: {e}")
             return None
 
@@ -415,10 +443,19 @@ class PollinationsBackgroundSetter:
         interval_str = simpledialog.askstring("Set Interval", "Enter interval in minutes:", initialvalue=str(self.interval / 60), parent=self.master)
         if interval_str is None:
             # Dialog cancelled; keep the current interval.
+            # The None check sits before the try on purpose: the
+            # pre-Wave 2 version of this method let float(None) raise
+            # TypeError inside a handler that only caught ValueError,
+            # so pressing Cancel crashed this dialog. Wave 2 measured
+            # that crash, and this check is the fix it made.
             return
         try:
             # Same 5 minute minimum the rest of the app enforces
             # (see __init__ and load_settings).
+            # The dialog speaks minutes and self.interval is seconds
+            # everywhere else in this file, and this line is the one
+            # place the conversion happens. float() also accepts
+            # entries like 2.5, so half minutes work and are kept.
             self.interval = max(5, float(interval_str)) * 60
             print(f"Interval set to {self.interval} seconds.")
             self.save_settings()
@@ -480,6 +517,11 @@ class PollinationsBackgroundSetter:
                     self.prompt_history = deque(json.load(f), maxlen=20)
             except (json.JSONDecodeError, OSError) as e:
                 print(f"Could not load prompt history ({e}); starting with an empty history.")
+                # My fallback deque keeps the same maxlen of 20 as a
+                # good load, so the history cap holds either way. The
+                # corrupt file itself stays on disk untouched until
+                # the next save_history call overwrites it, and the
+                # prompts that were in it are simply gone.
                 self.prompt_history = deque(maxlen=20)
         else:
             self.prompt_history = deque(maxlen=20)
@@ -572,6 +614,13 @@ class PollinationsBackgroundSetter:
                 # The prompt goes in the URL path, so it must be
                 # percent-encoded: a raw &, ?, or # in a prompt would
                 # otherwise corrupt the query parameters after it.
+                # I pass safe='' so even a / in the prompt is encoded.
+                # With the default safe set a slash would survive and
+                # read as an extra path segment, which changes what
+                # the service thinks the prompt path is. Wave 2
+                # captured the unencoded version of this URL with the
+                # prompt "cats & dogs? #1": the model, seed, and size
+                # parameters after the # never reached the service.
                 url = f"https://image.pollinations.ai/prompt/{quote(prompt, safe='')}?nologo=true&nofeed=true&model={self.model.get()}&enhance={enhance_param}&seed={seed}&width={width}&height={height}"
                 print(f"Attempt {attempt + 1}: Fetching image with URL: {url}")
                 
@@ -674,7 +723,17 @@ class PollinationsBackgroundSetter:
                     settings = json.load(f)
             except (json.JSONDecodeError, OSError) as e:
                 print(f"Could not load settings ({e}); using defaults.")
+                # I fall back to an empty dict instead of returning,
+                # so the apply code below still runs and every setting
+                # takes its .get default, the same path a settings
+                # file with missing keys already took. In Wave 2
+                # testing a corrupt file crashed __init__ on this
+                # load, before the window ever appeared.
                 settings = {}
+            # One mismatch I have to remember in this block: the
+            # interval floor here is written as 300 seconds, while
+            # set_interval writes the same floor as 5 minutes times
+            # 60. Same rule, two units, two places to change.
             self.enhance.set(settings.get("enhance", False))
             self.wallpaper_style.set(settings.get("wallpaper_style", "fill"))
             self.interval = max(300, settings.get("interval", 300))
