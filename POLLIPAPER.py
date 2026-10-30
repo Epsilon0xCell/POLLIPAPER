@@ -19,7 +19,7 @@ from comtypes import GUID
 import sys
 import pythoncom
 import winreg
-import piexif
+from urllib.parse import quote
 
 # Define HRESULT
 HRESULT = ctypes.HRESULT
@@ -74,23 +74,32 @@ class WeatherFetcher:
             print("OpenWeather API key not found. Weather features will be disabled.")
             return None
 
-        # Step 1: Get coordinates using Geocoding API
-        geocode_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city},{country}&limit=1&appid={self.api_key}"
-        geocode_response = requests.get(geocode_url)
-        geocode_data = geocode_response.json()
+        try:
+            # Step 1: Get coordinates using Geocoding API
+            geocode_url = f"https://api.openweathermap.org/geo/1.0/direct?q={city},{country}&limit=1&appid={self.api_key}"
+            geocode_response = requests.get(geocode_url, timeout=15)
+            geocode_response.raise_for_status()
+            geocode_data = geocode_response.json()
 
-        if not geocode_data:
-            raise ValueError(f"Could not find coordinates for {city}, {country}")
+            if not geocode_data:
+                print(f"Could not find coordinates for {city}, {country}")
+                return None
 
-        lat = geocode_data[0]['lat']
-        lon = geocode_data[0]['lon']
+            lat = geocode_data[0]['lat']
+            lon = geocode_data[0]['lon']
 
-        print(f"Coordinates for {city}, {country}: Lat {lat}, Lon {lon}")
+            print(f"Coordinates for {city}, {country}: Lat {lat}, Lon {lon}")
 
-        # Step 2: Fetch weather data using the updated API endpoint
-        weather_url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={self.api_key}&units={units}&lang={lang}"
-        weather_response = requests.get(weather_url)
-        weather_data = weather_response.json()
+            # Step 2: Fetch weather data using the updated API endpoint
+            weather_url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={self.api_key}&units={units}&lang={lang}"
+            weather_response = requests.get(weather_url, timeout=15)
+            weather_response.raise_for_status()
+            weather_data = weather_response.json()
+        except (RequestException, ValueError, KeyError, IndexError, TypeError) as e:
+            # Callers treat None as "weather unavailable"; a network or
+            # API failure must not crash the GUI callback that asked.
+            print(f"Failed to fetch weather data: {e}")
+            return None
 
         # Step 3: Save weather data to JSON file
         with open('weather_data.json', 'w') as f:
@@ -404,11 +413,16 @@ class PollinationsBackgroundSetter:
 
     def set_interval(self):
         interval_str = simpledialog.askstring("Set Interval", "Enter interval in minutes:", initialvalue=str(self.interval / 60), parent=self.master)
+        if interval_str is None:
+            # Dialog cancelled; keep the current interval.
+            return
         try:
-            self.interval = max(0.1, float(interval_str)) * 60
+            # Same 5 minute minimum the rest of the app enforces
+            # (see __init__ and load_settings).
+            self.interval = max(5, float(interval_str)) * 60
             print(f"Interval set to {self.interval} seconds.")
             self.save_settings()
-        except ValueError:
+        except (TypeError, ValueError):
             messagebox.showerror("Invalid Input", "Please enter a valid number for the interval.")
 
     def toggle_always_on_top(self):
@@ -461,8 +475,12 @@ class PollinationsBackgroundSetter:
 
     def load_history(self):
         if os.path.exists('prompt_history.json'):
-            with open('prompt_history.json', 'r') as f:
-                self.prompt_history = deque(json.load(f), maxlen=20)
+            try:
+                with open('prompt_history.json', 'r') as f:
+                    self.prompt_history = deque(json.load(f), maxlen=20)
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"Could not load prompt history ({e}); starting with an empty history.")
+                self.prompt_history = deque(maxlen=20)
         else:
             self.prompt_history = deque(maxlen=20)
         self.update_history_dropdown()
@@ -551,7 +569,10 @@ class PollinationsBackgroundSetter:
                 else:
                     print(f"Using user prompt: {prompt}")
                 
-                url = f"https://image.pollinations.ai/prompt/{prompt}?nologo=true&nofeed=true&model={self.model.get()}&enhance={enhance_param}&seed={seed}&width={width}&height={height}"
+                # The prompt goes in the URL path, so it must be
+                # percent-encoded: a raw &, ?, or # in a prompt would
+                # otherwise corrupt the query parameters after it.
+                url = f"https://image.pollinations.ai/prompt/{quote(prompt, safe='')}?nologo=true&nofeed=true&model={self.model.get()}&enhance={enhance_param}&seed={seed}&width={width}&height={height}"
                 print(f"Attempt {attempt + 1}: Fetching image with URL: {url}")
                 
                 response = requests.get(url, timeout=45)
@@ -648,28 +669,32 @@ class PollinationsBackgroundSetter:
 
     def load_settings(self):
         if os.path.exists('background_settings.json'):
-            with open('background_settings.json', 'r') as f:
-                settings = json.load(f)
-                self.enhance.set(settings.get("enhance", False))
-                self.wallpaper_style.set(settings.get("wallpaper_style", "fill"))
-                self.interval = max(300, settings.get("interval", 300))
-                self.always_on_top.set(settings.get("always_on_top", False))
-                self.model.set(settings.get("model", "flux"))
-                self.use_weather.set(settings.get("use_weather", False))
-                self.overlay_weather.set(settings.get("overlay_weather", False))
-                self.overlay_opacity.set(settings.get("overlay_opacity", 128))
-                self.overlay_position.set(settings.get("overlay_position", "top_right"))
-                self.use_drop_shadow.set(settings.get("use_drop_shadow", False))
-                self.weather_api_key.set(settings.get("weather_api_key", ""))
-                self.temp_unit.set(settings.get("temp_unit", "F"))
-                self.overlay_color.set(settings.get("overlay_color", "#000000"))
-                
-                if self.weather_api_key.get():
-                    os.environ['OPENWEATHER_API_KEY'] = self.weather_api_key.get()
-                
-                self.update_position_options()
-                self.update_color_button()
-                self.toggle_always_on_top()
+            try:
+                with open('background_settings.json', 'r') as f:
+                    settings = json.load(f)
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"Could not load settings ({e}); using defaults.")
+                settings = {}
+            self.enhance.set(settings.get("enhance", False))
+            self.wallpaper_style.set(settings.get("wallpaper_style", "fill"))
+            self.interval = max(300, settings.get("interval", 300))
+            self.always_on_top.set(settings.get("always_on_top", False))
+            self.model.set(settings.get("model", "flux"))
+            self.use_weather.set(settings.get("use_weather", False))
+            self.overlay_weather.set(settings.get("overlay_weather", False))
+            self.overlay_opacity.set(settings.get("overlay_opacity", 128))
+            self.overlay_position.set(settings.get("overlay_position", "top_right"))
+            self.use_drop_shadow.set(settings.get("use_drop_shadow", False))
+            self.weather_api_key.set(settings.get("weather_api_key", ""))
+            self.temp_unit.set(settings.get("temp_unit", "F"))
+            self.overlay_color.set(settings.get("overlay_color", "#000000"))
+
+            if self.weather_api_key.get():
+                os.environ['OPENWEATHER_API_KEY'] = self.weather_api_key.get()
+
+            self.update_position_options()
+            self.update_color_button()
+            self.toggle_always_on_top()
 
         # Apply loaded settings to the UI
         self.apply_loaded_settings()
