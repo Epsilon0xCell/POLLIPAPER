@@ -1,6 +1,11 @@
-![banner](assets/banner.png)
+![Intro: an empty picture palace before the doors, the piano waiting under a blank glowing screen](intro-banner.png)
+
 
 # POLLIPAPER
+
+![Banner](banner.png)
+
+![Scene](scene.svg)
 
 POLLIPAPER is a Windows desktop wallpaper application written in Python
 with tkinter. It generates images with the Pollinations AI image service,
@@ -8,11 +13,19 @@ saves them locally, and sets them as the Windows desktop wallpaper through
 the Windows `IDesktopWallpaper` COM API. It can also build prompts from
 local weather data and draw a weather information overlay onto the image.
 
+
+![Separator](sep-heavy.svg)
+
 ## Platform
 
 Windows only. The code imports `winreg` and `pythoncom`, uses
 `ctypes.HRESULT`, and sets the wallpaper through a Windows COM interface,
 so it does not run on macOS or Linux.
+
+> **Cue sheet note, pencilled in the margin:** Windows only. The code imports winreg and pythoncom and sets the wallpaper through a Windows COM interface, so this act does not tour to macOS or Linux.
+
+
+![Separator](sep-heavy.svg)
 
 ## Features
 
@@ -36,6 +49,11 @@ so it does not run on macOS or Linux.
   5 most recent backgrounds and the most recent overlaid wallpaper are
   kept, older ones are deleted
 
+> **Cue sheet note:** the change interval has a floor of five minutes. Shorter intervals cannot be set in the Options menu.
+
+
+![Separator](sep-heavy.svg)
+
 ## Requirements
 
 - Windows, with Python 3
@@ -44,6 +62,9 @@ so it does not run on macOS or Linux.
 - tkinter, which ships with the standard Windows Python installer
 - An OpenWeatherMap API key, only for the weather features
 
+
+![Separator](sep-heavy.svg)
+
 ## Installation
 
 ```bash
@@ -51,6 +72,9 @@ git clone https://github.com/Epsilon0xCell/POLLIPAPER.git
 cd POLLIPAPER
 pip install -r requirements.txt
 ```
+
+
+![Separator](sep-heavy.svg)
 
 ## Usage
 
@@ -69,6 +93,9 @@ python POLLIPAPER.py
    fails, the app reports it and continues without weather data instead
    of crashing.
 
+
+![Separator](sep-heavy.svg)
+
 ## Limitations
 
 - The weather location is not configurable in the UI. The code defaults
@@ -81,9 +108,15 @@ python POLLIPAPER.py
   from, and a corrupt settings or history file is ignored (defaults or
   an empty history are used) rather than preventing startup.
 
+
+![Separator](sep-heavy.svg)
+
 ## License
 
 MIT, see the LICENSE file.
+
+
+![Separator](sep-heavy.svg)
 
 ## Acknowledgments
 

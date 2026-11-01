@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 56" role="img" aria-label="Separator: five empty staff lines with a key strip block at the centre">
+<g stroke="#8a8a92" stroke-width="3"><line x1="20" y1="12" x2="1180" y2="12"/><line x1="20" y1="22" x2="1180" y2="22"/><line x1="20" y1="32" x2="1180" y2="32"/><line x1="20" y1="42" x2="1180" y2="42"/><line x1="20" y1="52" x2="1180" y2="52"/></g>
+<g><rect x="566" y="8" width="30" height="44" fill="#eee6c8" stroke="#8a8a92" stroke-width="2"/><rect x="596" y="8" width="16" height="28" fill="#141416"/></g>
+<ellipse cx="600" cy="32" rx="6" ry="4" fill="#d896a0"/>
+</svg>
