@@ -24,8 +24,6 @@ Windows only. The code imports `winreg` and `pythoncom`, uses
 `ctypes.HRESULT`, and sets the wallpaper through a Windows COM interface,
 so it does not run on macOS or Linux.
 
-> **Mural note, brushed in the margin:** Windows only. The code imports winreg and pythoncom and sets the wallpaper through a Windows COM interface, so it does not run on macOS or Linux.
-
 
 ![Separator](sep-heavy.svg)
 
@@ -115,7 +113,7 @@ python POLLIPAPER.py
 
 ## License
 
-MIT, see the LICENSE file.
+MIT, see the [LICENSE](LICENSE) file.
 
 
 ![Separator](sep-heavy.svg)
