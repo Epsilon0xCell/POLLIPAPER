@@ -1,9 +1,11 @@
-![Intro: an empty picture palace before the doors, the piano waiting under a blank glowing screen](intro-banner.png)
+![Intro: a painter's hand brushing wet storm grey paint over the fair blue sky of a wall mural beside a rain streaked window, the gilt frame of the finished mural section at the right](intro-banner.png)
 
 
 # POLLIPAPER
 
-![Banner](banner.png)
+<p align="center"><img src="logo.png" alt="POLLIPAPER logo: an ornate gilt frame hung on cracked cream plaster, inside it a patch of wall painted with a perfect blue sky and one white cloud, the paint's rough edge showing where the mural meets bare plaster" width="200"></p>
+
+![Banner: a huge gilt framed mural of green fields under a fair blue sky painted across a cream plaster wall, while the real window at the left shows grey rain outside](banner.png)
 
 ![Scene](scene.svg)
 
@@ -22,7 +24,7 @@ Windows only. The code imports `winreg` and `pythoncom`, uses
 `ctypes.HRESULT`, and sets the wallpaper through a Windows COM interface,
 so it does not run on macOS or Linux.
 
-> **Cue sheet note, pencilled in the margin:** Windows only. The code imports winreg and pythoncom and sets the wallpaper through a Windows COM interface, so this act does not tour to macOS or Linux.
+> **Mural note, brushed in the margin:** Windows only. The code imports winreg and pythoncom and sets the wallpaper through a Windows COM interface, so it does not run on macOS or Linux.
 
 
 ![Separator](sep-heavy.svg)
@@ -49,7 +51,7 @@ so it does not run on macOS or Linux.
   5 most recent backgrounds and the most recent overlaid wallpaper are
   kept, older ones are deleted
 
-> **Cue sheet note:** the change interval has a floor of five minutes. Shorter intervals cannot be set in the Options menu.
+> **Mural note:** the change interval has a floor of five minutes. Shorter intervals cannot be set in the Options menu.
 
 
 ![Separator](sep-heavy.svg)
