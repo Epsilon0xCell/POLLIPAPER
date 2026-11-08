@@ -3,67 +3,71 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>POLLIPAPER: the pianist cue book</title>
-<meta name="description" content="POLLIPAPER is a Windows only Python program that asks the Pollinations AI service for pictures and sets them as desktop wallpaper. This page is its cue book.">
+<title>POLLIPAPER: the mural wall</title>
+<meta name="description" content="POLLIPAPER is a Windows only Python program that asks the Pollinations AI service for pictures and sets them as desktop wallpaper. This page is its painted wall.">
 <style>
-@font-face{font-family:'Amaranth';src:url('fonts/Amaranth-Regular.ttf') format('truetype')}
-@font-face{font-family:'Archivo';src:url('fonts/Archivo.ttf') format('truetype')}
+@font-face{font-family:'Cormorant Garamond';src:url('fonts/CormorantGaramond-Medium.ttf') format('truetype');font-weight:500}
+@font-face{font-family:'Cormorant Garamond';src:url('fonts/CormorantGaramond-SemiBold.ttf') format('truetype');font-weight:600}
+@font-face{font-family:'Cormorant Garamond';src:url('fonts/CormorantGaramond-Bold.ttf') format('truetype');font-weight:700}
+@font-face{font-family:'Jost';src:url('fonts/Jost-Regular.ttf') format('truetype');font-weight:400}
+@font-face{font-family:'Jost';src:url('fonts/Jost-Medium.ttf') format('truetype');font-weight:500}
+@font-face{font-family:'Jost';src:url('fonts/Jost-SemiBold.ttf') format('truetype');font-weight:600}
 *{box-sizing:border-box}
-body{margin:0;background:#3c3c42;color:#26241f;font-family:'Archivo',sans-serif;line-height:1.6}
+body{margin:0;background:#e9e1cd;color:#33302a;font-family:'Jost',sans-serif;line-height:1.6}
 .spine{max-width:980px;margin:0 auto;padding:0 22px 44px 58px;position:relative}
-.spine::before{content:'';position:fixed;top:0;bottom:0;width:26px;margin-left:-44px;background:repeating-linear-gradient(90deg,#141416 0 13px,#eee6c8 13px 26px)}
+.spine::before{content:'';position:fixed;top:0;bottom:0;width:26px;margin-left:-44px;background:linear-gradient(90deg,#8a6d2f,#c9a44e 45%,#8a6d2f)}
 .hero{padding-top:30px}
-.hero img{width:100%;height:auto;display:block}
-h1{font-family:'Amaranth',serif;font-size:3rem;color:#eee6c8;margin:.3em 0 .1em;letter-spacing:.03em}
-.lede{color:#eee6c8;font-size:1.12rem;max-width:66ch}
-.cue{background:#eee6c8;border-top:5px solid #26241f;padding:18px 24px 20px;margin:20px 0;position:relative;transition:transform .15s}
-.cue::before{content:attr(data-cue);position:absolute;top:8px;right:14px;font-family:'Amaranth',serif;color:#a86a72;font-size:.95rem}
+.hero img{width:100%;height:auto;display:block;border:4px solid #a8842c}
+h1{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:3.2rem;color:#4a3d16;margin:.3em 0 .1em;letter-spacing:.02em}
+.lede{color:#4c4636;font-size:1.12rem;max-width:66ch}
+.cue{background:#f7f2e3;border-top:5px solid #a8842c;padding:18px 24px 20px;margin:20px 0;position:relative;transition:transform .15s;box-shadow:0 3px 0 rgba(120,96,40,.35)}
+.cue::before{content:attr(data-cue);position:absolute;top:8px;right:14px;font-family:'Cormorant Garamond',serif;font-weight:600;color:#8a6d2f;font-size:1.05rem}
 .cue:hover{transform:translateY(-2px)}
-h2{font-family:'Amaranth',serif;font-size:1.8rem;margin:.05em 0 .35em;color:#26241f}
-code{background:#2a2a30;color:#eee6c8;padding:.08em .4em}
-pre{background:#2a2a30;color:#eee6c8;padding:14px 18px;overflow-x:auto}
-.startbtn{display:inline-block;background:#d896a0;color:#26241f;font-family:'Amaranth',serif;font-size:1.2rem;padding:.42em 1.3em;text-decoration:none;border-top:4px solid #26241f}
-.startbtn:active{transform:translateY(2px);border-top-color:#7a4a52}
-.startbtn:focus-visible{outline:3px solid #d896a0;outline-offset:4px}
-.ghostbtn{display:inline-block;background:#eee6c8;color:#26241f;font-family:'Archivo',sans-serif;padding:.5em 1.1em;text-decoration:none;border-top:4px solid #26241f;margin-left:.4em}
-.ghostbtn:focus-visible{outline:3px solid #d896a0;outline-offset:4px}
-a.key{color:#eee6c8;text-decoration:none}
-a.key::before{content:'';display:inline-block;width:.5em;height:.85em;background:#141416;margin-right:.5em;vertical-align:-.08em}
+h2{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:1.9rem;margin:.05em 0 .35em;color:#33302a}
+code{background:#33566e;color:#eef4f8;padding:.08em .4em}
+pre{background:#33566e;color:#eef4f8;padding:14px 18px;overflow-x:auto}
+.startbtn{display:inline-block;background:#a8842c;color:#fdf8ea;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:1.3rem;padding:.42em 1.3em;text-decoration:none;border-top:4px solid #6d5322}
+.startbtn:active{transform:translateY(2px);border-top-color:#4a3d16}
+.startbtn:focus-visible{outline:3px solid #7fb2d9;outline-offset:4px}
+.ghostbtn{display:inline-block;background:#f7f2e3;color:#33302a;font-family:'Jost',sans-serif;padding:.5em 1.1em;text-decoration:none;border-top:4px solid #a8842c;margin-left:.4em}
+.ghostbtn:focus-visible{outline:3px solid #7fb2d9;outline-offset:4px}
+a.key{color:#4a3d16;text-decoration:none;font-weight:500}
+a.key::before{content:'';display:inline-block;width:.5em;height:.85em;background:#a8842c;margin-right:.5em;vertical-align:-.08em}
 a.key:hover{text-decoration:underline}
-a.key:hover::before{background:#d896a0}
-.staff{border:0;margin:26px 0 4px;border-top:3px solid #8a8a92;box-shadow:0 8px 0 -3px #3c3c42,0 11px 0 -3px #8a8a92}
-footer{color:#c9c9cf;font-size:.92rem;padding-top:10px}
-.on-dark{color:#eee6c8}
+a.key:hover::before{background:#7fb2d9}
+.staff{border:0;margin:26px 0 4px;border-top:3px solid #a8842c;box-shadow:0 8px 0 -3px #e9e1cd,0 11px 0 -3px #a8842c}
+footer{color:#6d6450;font-size:.92rem;padding-top:10px}
+.on-dark{color:#4a3d16}
 </style>
 </head>
 <body>
 <div class="spine">
 <header class="hero">
-<img src="https://raw.githubusercontent.com/Epsilon0xCell/POLLIPAPER/main/intro-banner.png" alt="An empty picture palace before the doors, a piano waiting in the glow of a blank screen">
+<img src="https://raw.githubusercontent.com/Epsilon0xCell/POLLIPAPER/main/intro-banner.png" alt="A painter hand brushing wet storm grey paint over the fair blue sky of a wall mural beside a rain streaked window, the gilt frame of the finished mural section at the right">
 <h1>POLLIPAPER</h1>
-<p class="lede">POLLIPAPER is a Windows only desktop program written in Python with tkinter. It asks the Pollinations AI service for pictures, saves what comes back, and puts the result on the desktop through the Windows IDesktopWallpaper COM interface. It will not run on macOS or Linux, and this book says so on its front page, in the open.</p>
-<p><a class="startbtn" href="https://github.com/Epsilon0xCell/POLLIPAPER">Start: the repo on GitHub</a> <a class="ghostbtn" href="#cue1">Open the cue book</a></p>
+<p class="lede">POLLIPAPER is a Windows only desktop program written in Python with tkinter. It asks the Pollinations AI service for pictures, saves what comes back, and puts the result on the desktop through the Windows IDesktopWallpaper COM interface. It will not run on macOS or Linux, and this wall says so on its face, in the open.</p>
+<p><a class="startbtn" href="https://github.com/Epsilon0xCell/POLLIPAPER">Start: the repo on GitHub</a> <a class="ghostbtn" href="#cue1">See the panels</a></p>
 </header>
 <main>
 <hr class="staff">
-<section class="cue" data-cue="Cue 1" id="cue1">
-<h2>Cue one: the prompt</h2>
+<section class="cue" data-cue="Panel 1" id="cue1">
+<h2>Panel one: the prompt</h2>
 <p>Type a prompt into the text box, or fish an older one out of the history dropdown. The history remembers the most recent 20 prompts and keeps them in <code>prompt_history.json</code>. The typed words are percent encoded into the Pollinations request address.</p>
 </section>
-<section class="cue" data-cue="Cue 2">
-<h2>Cue two: the performance controls</h2>
+<section class="cue" data-cue="Panel 2">
+<h2>Panel two: the performance controls</h2>
 <p>The Start button turns into Stop while the program runs. The Enhance tick box asks for improved wording, and that improved wording can be read back from the returned image EXIF data. The model picker defaults to flux, alongside flux realism, flux anime, flux 3d, any dark, and turbo, named in the program as flux, flux-realism, flux-anime, flux-3d, any-dark, and turbo. The change interval is set from the Options menu, with a floor of five minutes.</p>
 </section>
-<section class="cue" data-cue="Cue 3">
-<h2>Cue three: how the picture sits</h2>
+<section class="cue" data-cue="Panel 3">
+<h2>Panel three: how the picture sits</h2>
 <p>Wallpaper styles are named exactly as the program names them: center, tile, stretch, fit, fill at 1920 by 1080, and span at 3840 by 1080.</p>
 </section>
-<section class="cue" data-cue="Cue 4">
-<h2>Cue four: weather from outside</h2>
+<section class="cue" data-cue="Panel 4">
+<h2>Panel four: weather from outside</h2>
 <p>With an OpenWeatherMap key supplied through the Options menu or the <code>OPENWEATHER_API_KEY</code> environment variable, the program can shape prompts from local weather or lay a weather panel over the picture. The panel controls: opacity from 0 to 255, position, background colour, an optional drop shadow, and temperature shown in Fahrenheit or Celsius after a metric fetch. The honest limits sit on this card too: the place is not choosable in the window, the code defaults to Rochester, US, and weather calls time out after 15 seconds.</p>
 </section>
-<section class="cue" data-cue="Cue 5">
-<h2>Cue five: housekeeping at the back of the book</h2>
+<section class="cue" data-cue="Panel 5">
+<h2>Panel five: housekeeping at the back of the wall</h2>
 <p>Pictures collect in a folder called <code>POLLINATIONS_BACKGROUNDS</code>. Only the five newest backgrounds and the single newest finished wallpaper are kept; older files are deleted. Settings persist in <code>background_settings.json</code>. Image generation retries up to five times with backoff. The install is <code>python POLLIPAPER.py</code> after installing requests, Pillow, comtypes, and pywin32:</p>
 <pre>pip install requests Pillow comtypes pywin32
 python POLLIPAPER.py</pre>
@@ -71,7 +75,7 @@ python POLLIPAPER.py</pre>
 <p class="on-dark"><a class="key" href="https://github.com/Epsilon0xCell/POLLIPAPER/blob/main/POLLIPAPER.py">Read POLLIPAPER.py itself</a></p>
 </main>
 <footer>
-<p>Colophon: fonts are Amaranth and Archivo, both SIL Open Font License 1.1, license texts beside the font files. Fifties Movies was a lettering reference only and is not embedded. The program makes no sound; the pianist here stands for its method, a fresh picture fitted to the words in front of it, at a set interval.</p>
+<p>Colophon: fonts are Cormorant Garamond and Jost, both SIL Open Font License 1.1, license texts beside the font files. The mural here stands for its method, a fresh picture fitted to the weather outside, repainted at a set interval.</p>
 </footer>
 </div>
 </body>
